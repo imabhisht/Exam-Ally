@@ -1,5 +1,4 @@
 import google.generativeai as genai
-import logging
 import os
 from flask import current_app
 genai.configure(api_key=os.getenv('GOOGLE_API_KEY')) 
