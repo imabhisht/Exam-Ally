@@ -26,4 +26,8 @@ def create_flask_app():
     project_routes(app)
     CORS(app)
 
+    @app.route('/')
+    def hello_world():
+        return 'Hello, World!'
+
     return app
