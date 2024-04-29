@@ -35,6 +35,10 @@ CORS(app)
 def hello_world():
     return 'Hello, World!'
 
+@app.route('/help')
+def help():
+    return 'To use write a Prompt after / in the url. Example: https://www.examally.co/WriteHelloWorldPythonProgram. The response will be the code generated.'
+
 @app.route('/<string:q>')
 def ai_route(q):
     ## Get Query Parameters
