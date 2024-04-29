@@ -1,7 +1,8 @@
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
 # from routes import project_routes
 import logging
+from functions.copilot_gen import generate_text
 
 
 def configure_logging(app):
@@ -27,7 +28,17 @@ CORS(app)
 
 @app.route('/')
 def hello_world():
-    return 'Hello, World!'
+    ## Get Query Parameters
+    q = request.args.get('q')
+    if q:
+        return generate_text(q)
+    else:
+        return 'Hello, World!'
+
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
