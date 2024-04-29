@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
-from routes import project_routes
+# from routes import project_routes
 import logging
 
 
@@ -22,7 +22,7 @@ def configure_logging(app):
 
 app = Flask(__name__)
 configure_logging(app)
-project_routes(app)
+# project_routes(app)
 CORS(app)
 
 @app.route('/')
