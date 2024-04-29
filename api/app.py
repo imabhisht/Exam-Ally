@@ -1,12 +1,14 @@
 import dotenv
 dotenv.load_dotenv()
-from flask import Flask, request
+from flask import Flask, request, send_file
 from flask_cors import CORS
 # from routes import project_routes
 import logging
 from api.functions.copilot_gen import generate_text
 import os
 import random
+from io import BytesIO
+
 
 def configure_logging(app):
     # Set log level
@@ -49,12 +51,51 @@ def ai_route(q):
         # return generate_text(q)
     else:
         return 'Hello, World!'
+    
+@app.route('/save/<string:q>')
+def ai_route_save(q):
+    ## Get Query Parameters
+    # q = request.args.get('q')
+    if q:
+        # Modify the string to append space before every uppercase letter (except the first one)
+        modified_q = ''
+        for i, char in enumerate(q):
+            if i > 0 and char.isupper():
+                modified_q += ' ' + char
+            else:
+                modified_q += char
 
+        # Generate text
+        answer = generate_text(modified_q, save=True)
 
+        ## If answer contains ```python in start and ``` end, then only return the code
+        if "```python" in answer and "```" in answer:
+            start = answer.index("```python")
+            end = answer.index("```", start+1)
+            answer = answer[start:end+3]
 
+            ## Remove ```python and ``` from the code
+            answer = answer.replace("```python", "")
+            answer = answer.replace("```", "")
+            
+            python_code_bytes = bytes(answer, 'utf-8')
 
+            # Create an in-memory file-like object using BytesIO
+            in_memory_file = BytesIO()
+            in_memory_file.write(python_code_bytes)
+            in_memory_file.seek(0)
+            app.logger.info("Python code found in answer. Returning python code as a file.")
+            app.logger.info(f"Prompt: {modified_q} \nCode: {answer}")
+            return send_file(in_memory_file, as_attachment=True, download_name="gen_code.py", mimetype='text/plain')
+        
+        else:
+            app.logger.info("Answer does not contain python code")
+            return answer
+
+    else:   
+        return 'Hello, World!'
 
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0')
 
