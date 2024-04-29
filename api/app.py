@@ -58,8 +58,6 @@ def ai_route(q):
             answer = answer.replace("```python", "")
             answer = answer.replace("```", "")
             
-            python_code_bytes = bytes(answer, 'utf-8')
-
             app.logger.info(f"Prompt: {modified_q} \nCode: {answer}")
             app.logger.info("Python code found in answer. Returning python code.")
             return answer
