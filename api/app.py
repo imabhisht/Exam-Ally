@@ -1,9 +1,12 @@
+import dotenv
+dotenv.load_dotenv()
 from flask import Flask, request
 from flask_cors import CORS
 # from routes import project_routes
 import logging
 from api.functions.copilot_gen import generate_text
-
+import os
+import random
 
 def configure_logging(app):
     # Set log level
@@ -28,10 +31,22 @@ CORS(app)
 
 @app.route('/')
 def hello_world():
+    return 'Hello, World!'
+
+@app.route('/<string:q>')
+def ai_route(q):
     ## Get Query Parameters
-    q = request.args.get('q')
+    # q = request.args.get('q')
     if q:
-        return generate_text(q)
+        # Modify the string to append space before every uppercase letter (except the first one)
+        modified_q = ''
+        for i, char in enumerate(q):
+            if i > 0 and char.isupper():
+                modified_q += ' ' + char
+            else:
+                modified_q += char
+        return generate_text(modified_q)
+        # return generate_text(q)
     else:
         return 'Hello, World!'
 
@@ -41,5 +56,5 @@ def hello_world():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False, host='0.0.0.0')
 
