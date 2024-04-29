@@ -2,8 +2,7 @@ import google.generativeai as genai
 import os
 from flask import current_app
 import random
-
-
+import pymongo
 
 def generate_text(prompt):
     google_api_key = (os.getenv('GOOGLE_API_KEY')).split(";")
