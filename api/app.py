@@ -47,8 +47,26 @@ def ai_route(q):
                 modified_q += ' ' + char
             else:
                 modified_q += char
-        return generate_text(modified_q)
-        # return generate_text(q)
+        answer = generate_text(modified_q)
+
+        if "```python" in answer and "```" in answer:
+            start = answer.index("```python")
+            end = answer.index("```", start+1)
+            answer = answer[start:end+3]
+
+            ## Remove ```python and ``` from the code
+            answer = answer.replace("```python", "")
+            answer = answer.replace("```", "")
+            
+            python_code_bytes = bytes(answer, 'utf-8')
+
+            app.logger.info(f"Prompt: {modified_q} \nCode: {answer}")
+            app.logger.info("Python code found in answer. Returning python code.")
+            return answer
+        else:
+            app.logger.info(f"Prompt: {modified_q} \nCode: {answer}")
+            app.logger.info("Answer does not contain python code")
+            return answer
     else:
         return 'Hello, World!'
     
