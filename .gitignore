@@ -1,1 +1,5 @@
 .env
+
+## Add __pycahce__
+
+__pycache__/

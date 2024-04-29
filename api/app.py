@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
-from app.routes import project_routes
+from routes import project_routes
 import logging
 
 
@@ -20,14 +20,15 @@ def configure_logging(app):
     # Add the handler to the logger
     app.logger.addHandler(stream_handler)
 
-def create_flask_app():
-    app = Flask(__name__)
-    configure_logging(app)
-    project_routes(app)
-    CORS(app)
+app = Flask(__name__)
+configure_logging(app)
+project_routes(app)
+CORS(app)
 
-    @app.route('/')
-    def hello_world():
-        return 'Hello, World!'
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
 
-    return app
+if __name__ == '__main__':
+    app.run(debug=True)
+

@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.functions.copilot_gen import generate_text
+from functions.copilot_gen import generate_text
 bp = Blueprint('copilot', __name__)
 
 @bp.route('/')
