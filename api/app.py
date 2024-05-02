@@ -4,7 +4,7 @@ from flask import Flask, request, send_file
 from flask_cors import CORS
 # from routes import project_routes
 import logging
-from api.functions.copilot_gen import generate_text
+from functions.copilot_gen import generate_text
 import os
 import random
 from io import BytesIO
