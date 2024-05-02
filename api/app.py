@@ -4,7 +4,7 @@ from flask import Flask, request, send_file
 from flask_cors import CORS
 # from routes import project_routes
 import logging
-from functions.copilot_gen import generate_text
+from api.functions.copilot_gen import generate_text
 import os
 import random
 from io import BytesIO
@@ -47,6 +47,7 @@ def help():
 
 
 @app.route('/<string:q>')
+@app.route("/s/<string:q>")
 def ai_route(q):
     ## Get Query Parameters
     # q = request.args.get('q')
@@ -78,6 +79,7 @@ def ai_route(q):
             return answer
     else:
         return 'Hello, World!'
+
 
 # @app.route('/puja/<string:q>', methods=['GET'])
 # def send_message_secure(q):
