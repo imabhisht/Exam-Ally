@@ -82,7 +82,8 @@ def ai_route(q):
 @app.route('/puja/<string:q>', methods=['GET'])
 def send_message_secure(q):
     
-
+    print("q", q)
+    print("request", os.getenv('MONGODB_URI'))
 
     if q:
 
