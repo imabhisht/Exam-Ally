@@ -8,6 +8,12 @@ from api.functions.copilot_gen import generate_text
 import os
 import random
 from io import BytesIO
+import pymongo
+
+## Connect the MongoDB Database
+client = pymongo.MongoClient(os.getenv('MONGODB_URI'))
+db = client["examally"]
+collection = db["messages"]
 
 
 def configure_logging(app):
@@ -39,7 +45,8 @@ def hello_world():
 def help():
     return 'To use write a Prompt after / in the url. Example: https://www.examally.co/WriteHelloWorldPythonProgram. The response will be the code generated.'
 
-@app.route('/<string:q>')
+
+@app.route('/s/<string:q>')
 def ai_route(q):
     ## Get Query Parameters
     # q = request.args.get('q')
@@ -71,7 +78,46 @@ def ai_route(q):
             return answer
     else:
         return 'Hello, World!'
+
+@app.route('/puja/<string:q>', methods=['GET'])
+def send_message_secure(q):
     
+
+
+    if q:
+
+        modified_q = ''
+        for i, char in enumerate(q):
+            if i > 0 and char.isupper():
+                modified_q += ' ' + char
+            else:
+                modified_q += char
+
+        # Save the message in the database
+        # message = {"message": modified_q}
+        # Insert the message in the database with _id
+        if(collection.find_one({"_id": "puja"})):
+            collection.update_one({"_id": "puja"}, {"$set": {"message": modified_q}})
+        else:
+            collection.insert_one({
+                "_id": "puja",
+                "message": modified_q
+            })
+        app.logger.info(f"Message saved: {q}")
+        print("Message saved")
+        return 'Message saved successfully'
+    else:
+        return 'Message not saved'
+ 
+@app.route('/puja', methods=['GET'])
+def get_message_secure():
+    message = collection.find_one({"_id": "puja"})
+    if message:
+        app.logger.info(f"Message fetched: {message['message']}")
+        return message['message']
+    else:
+        return 'Message not found'
+
 @app.route('/save/<string:q>')
 def ai_route_save(q):
     ## Get Query Parameters
@@ -114,6 +160,7 @@ def ai_route_save(q):
 
     else:   
         return 'Hello, World!'
+
 
 
 if __name__ == '__main__':
